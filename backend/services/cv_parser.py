@@ -1,16 +1,24 @@
 """
-CV Parser Service
-Extract information from PDF and DOCX files
+CV Parser Service with GPT Enhancement
+Extract and structure information from PDF and DOCX files
+
+Strategy:
+1. Extract raw text from PDF/DOCX
+2. Send to GPT for intelligent parsing and structuring
+3. Return clean, structured CV data
 
 Uses:
 - PyPDF2 for PDF extraction
 - python-docx for DOCX extraction
-- Regular expressions for pattern matching
+- OpenAI GPT-4o-mini for intelligent text structuring
 """
 
 import re
+import os
+import json
 from typing import Dict, List, Optional
 import io
+from openai import OpenAI
 
 try:
     import PyPDF2
@@ -24,13 +32,26 @@ except ImportError:
 
 
 class CVParser:
-    """Parse CV files and extract structured information"""
+    """Parse CV files and extract structured information using GPT"""
     
     def __init__(self):
+        # Initialize OpenAI client
+        self.api_key = os.getenv('OPENAI_API_KEY')
+        self.model = os.getenv('OPENAI_MODEL', 'gpt-4o-mini')
+        
+        if self.api_key:
+            self.client = OpenAI(api_key=self.api_key)
+            self.gpt_available = True
+        else:
+            print("⚠️  Warning: OPENAI_API_KEY not found. CV parsing will use basic regex.")
+            self.client = None
+            self.gpt_available = False
+        
+        # Fallback patterns (si GPT non disponible)
         self.email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
         self.phone_pattern = r'(\+33|0)[1-9](\s?\d{2}){4}'
         
-        # Common skill keywords (à enrichir)
+        # Fallback skill keywords for regex-based extraction
         self.tech_skills = [
             'python', 'java', 'javascript', 'typescript', 'react', 'angular', 'vue',
             'node.js', 'nodejs', 'express', 'django', 'flask', 'fastapi',
@@ -44,7 +65,7 @@ class CVParser:
         
     def parse_file(self, file_content: bytes, content_type: str) -> Dict:
         """
-        Parse CV file and extract information
+        Parse CV file and extract information using GPT
         
         Args:
             file_content: Binary content of the file
@@ -53,7 +74,7 @@ class CVParser:
         Returns:
             Dictionary with extracted CV information
         """
-        # Extract raw text based on file type
+        # Step 1: Extract raw text based on file type
         if 'pdf' in content_type.lower():
             text = self._extract_text_from_pdf(file_content)
         elif 'word' in content_type.lower() or 'docx' in content_type.lower():
@@ -61,20 +82,19 @@ class CVParser:
         else:
             raise ValueError(f"Unsupported file type: {content_type}")
         
-        # Extract structured information
-        cv_data = {
-            'raw_text': text,
-            'name': self._extract_name(text),
-            'email': self._extract_email(text),
-            'phone': self._extract_phone(text),
-            'skills': self._extract_skills(text),
-            'experience_years': self._estimate_experience_years(text),
-            'education': self._extract_education(text),
-            'languages': self._extract_languages(text),
-            'summary': self._generate_summary(text)
-        }
-        
-        return cv_data
+        # Step 2: Use GPT to structure the text (if available)
+        if self.gpt_available and text.strip():
+            try:
+                cv_data = self._parse_with_gpt(text)
+                cv_data['raw_text'] = text  # Keep original text
+                return cv_data
+            except Exception as e:
+                print(f"⚠️  GPT parsing failed: {e}. Falling back to regex.")
+                # Fallback to regex if GPT fails
+                return self._parse_with_regex(text)
+        else:
+            # Fallback to regex parsing
+            return self._parse_with_regex(text)
     
     def _extract_text_from_pdf(self, file_content: bytes) -> str:
         """Extract text from PDF file"""
@@ -109,6 +129,120 @@ class CVParser:
             return text.strip()
         except Exception as e:
             raise ValueError(f"Error extracting text from DOCX: {str(e)}")
+    
+    def _parse_with_gpt(self, text: str) -> Dict:
+        """
+        Use GPT to intelligently parse and structure CV text
+        
+        Args:
+            text: Raw CV text
+            
+        Returns:
+            Structured CV data dictionary
+        """
+        prompt = f"""Tu es un expert en analyse de CV. Extrais les informations suivantes du CV ci-dessous et retourne-les au format JSON strict.
+
+Structure JSON attendue :
+{{
+    "name": "Prénom NOM du candidat",
+    "email": "email@example.com",
+    "phone": "numéro de téléphone",
+    "skills": ["compétence1", "compétence2", "compétence3"],
+    "experience_years": nombre d'années d'expérience (nombre entier),
+    "education": ["Diplôme 1", "Diplôme 2"],
+    "languages": ["langue1", "langue2"],
+    "summary": "Résumé du profil en 2-3 phrases"
+}}
+
+Instructions :
+- Si une information est absente, utilise null ou [] selon le type
+- Pour experience_years, estime à partir des dates d'expériences mentionnées
+- Pour skills, liste les compétences techniques et soft skills importantes
+- Pour education, liste les diplômes obtenus (TABLEAU de strings)
+- Pour languages, liste les langues avec leur niveau si mentionné
+- Pour summary, résume le profil professionnel en 2-3 phrases maximum
+
+CV à analyser :
+---
+{text[:4000]}
+---
+
+Réponds UNIQUEMENT avec le JSON, sans texte avant ou après."""
+
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": "Tu es un assistant qui extrait des données structurées de CV. Tu réponds UNIQUEMENT en JSON valide."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.3,  # Low temperature for consistent extraction
+                max_tokens=1000
+            )
+            
+            # Parse JSON response
+            json_str = response.choices[0].message.content.strip()
+            
+            # Remove markdown code blocks if present
+            if json_str.startswith('```'):
+                json_str = json_str.split('```')[1]
+                if json_str.startswith('json'):
+                    json_str = json_str[4:]
+                json_str = json_str.strip()
+            
+            cv_data = json.loads(json_str)
+            
+            # Ensure all expected fields exist with correct types
+            cv_data.setdefault('name', None)
+            cv_data.setdefault('email', None)
+            cv_data.setdefault('phone', None)
+            cv_data.setdefault('skills', [])
+            cv_data.setdefault('experience_years', 0)
+            cv_data.setdefault('languages', [])
+            cv_data.setdefault('summary', None)
+            
+            # Ensure education is always a list
+            education = cv_data.get('education')
+            if education is None:
+                cv_data['education'] = []
+            elif isinstance(education, str):
+                # Convert string to list
+                cv_data['education'] = [education] if education.strip() else []
+            elif not isinstance(education, list):
+                cv_data['education'] = []
+            
+            print(f"✅ GPT successfully parsed CV: {cv_data.get('name', 'Unknown')}")
+            return cv_data
+            
+        except json.JSONDecodeError as e:
+            print(f"⚠️  Failed to parse GPT JSON response: {e}")
+            raise
+        except Exception as e:
+            print(f"⚠️  GPT API error: {e}")
+            raise
+    
+    def _parse_with_regex(self, text: str) -> Dict:
+        """
+        Fallback: Parse CV using regex patterns (basic extraction)
+        
+        Args:
+            text: Raw CV text
+            
+        Returns:
+            Structured CV data dictionary
+        """
+        print("⚠️  Using fallback regex parsing (GPT unavailable)")
+        cv_data = {
+            'name': self._extract_name(text),
+            'email': self._extract_email(text),
+            'phone': self._extract_phone(text),
+            'skills': self._extract_skills(text),
+            'experience_years': self._estimate_experience_years(text),
+            'education': self._extract_education(text),
+            'languages': self._extract_languages(text),
+            'summary': self._generate_summary(text)
+        }
+        return cv_data
     
     def _extract_email(self, text: str) -> Optional[str]:
         """Extract email address from text"""
