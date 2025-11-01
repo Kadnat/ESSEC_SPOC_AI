@@ -184,6 +184,14 @@ class JobFetcher:
             return jobs
             
         except requests.exceptions.RequestException as e:
+            # Print response body when available for debugging
+            try:
+                if 'response' in locals() and response is not None:
+                    print(f"⚠️  France Travail API response status: {response.status_code}")
+                    print(f"⚠️  France Travail API response body: {response.text}")
+            except Exception:
+                pass
+
             print(f"⚠️  France Travail API error: {e}")
             return self._get_mock_jobs()
     
