@@ -44,6 +44,21 @@ function App() {
           salaryRange: job.salary_range,
           educationLevel: job.education_level,
         })),
+        realJobOffers: data.real_job_offers.map(job => ({
+          id: job.id,
+          title: job.title,
+          company: job.company,
+          location: job.location,
+          contractType: job.contract_type,
+          description: job.description,
+          requiredSkills: job.required_skills,
+          experienceRequired: job.experience_required,
+          salary: job.salary,
+          publicationDate: job.publication_date,
+          url: job.url,
+          romeCode: job.rome_code,
+          source: job.source,
+        })),
         trainings: data.training_recommendations.map(training => ({
           id: training.training_id,
           title: training.title,
@@ -219,6 +234,76 @@ function App() {
                 <p className="text-gray-800 leading-relaxed">
                   {results.aiInsights}
                 </p>
+              </div>
+            )}
+
+            {/* Real Job Offers from France Travail */}
+            {results.realJobOffers && results.realJobOffers.length > 0 && (
+              <div className="bg-white rounded-lg shadow-lg p-8">
+                <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+                  💼 Offres d'emploi réelles
+                </h2>
+                <p className="text-sm text-gray-500 mb-6">
+                  Powered by France Travail API - Offres mises à jour quotidiennement
+                </p>
+                <div className="space-y-4">
+                  {results.realJobOffers.map((job, idx) => (
+                    <div
+                      key={idx}
+                      className="border-l-4 border-green-500 bg-green-50 rounded-lg p-5 hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            {job.title}
+                          </h3>
+                          <p className="text-sm text-gray-600 mt-1">
+                            🏢 {job.company} • 📍 {job.location}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            📝 {job.contractType} • {job.experienceRequired}
+                            {job.salary && ` • 💰 ${job.salary}`}
+                          </p>
+                        </div>
+                        <span className="text-xs px-2 py-1 bg-green-600 text-white rounded">
+                          {job.source}
+                        </span>
+                      </div>
+                      
+                      {job.description && (
+                        <p className="text-sm text-gray-700 mt-3 line-clamp-3">
+                          {job.description.substring(0, 200)}...
+                        </p>
+                      )}
+                      
+                      {job.requiredSkills && job.requiredSkills.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-3">
+                          {job.requiredSkills.slice(0, 5).map((skill, i) => (
+                            <span key={i} className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      
+                      <div className="flex gap-3 mt-4">
+                        {job.url && (
+                          <a
+                            href={job.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-green-600 hover:text-green-700 font-medium"
+                          >
+                            Voir l'offre →
+                          </a>
+                        )}
+                        <span className="text-xs text-gray-400">
+                          Publié le {new Date(job.publicationDate).toLocaleDateString('fr-FR')}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 

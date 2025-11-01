@@ -20,6 +20,7 @@ load_dotenv()
 from services.cv_parser import cv_parser
 from services.semantic_matcher import semantic_matcher
 from services.llm_service import llm_service
+from services.job_fetcher import job_fetcher
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -73,12 +74,29 @@ class TrainingRecommendation(BaseModel):
     skills_acquired: List[str]
     relevance_score: float
 
+class RealJobOffer(BaseModel):
+    """Real job offer from France Travail API"""
+    id: str
+    title: str
+    company: str
+    location: str
+    contract_type: str
+    description: str
+    required_skills: List[str]
+    experience_required: str
+    salary: Optional[str] = None
+    publication_date: str
+    url: str
+    rome_code: str
+    source: str
+
 class RecommendationResponse(BaseModel):
     """Complete response with analysis and recommendations"""
     cv_analysis: CVAnalysis
     job_recommendations: List[JobRecommendation]
     training_recommendations: List[TrainingRecommendation]
     ai_insights: str
+    real_job_offers: List[RealJobOffer] = []  # New field for real offers
 
 # ============================================
 # API Endpoints
@@ -187,6 +205,11 @@ async def analyze_cv(file: UploadFile = File(...)):
             unique_missing_skills
         )
         
+        # Fetch real job offers from France Travail API
+        # Extract ROME codes from recommended jobs
+        top_rome_codes = [job.get('job_id', '') for job in job_recommendations[:3]]
+        real_jobs = job_fetcher.get_jobs_for_cv(cv_data, top_rome_codes)
+        
         # Build response
         response = RecommendationResponse(
             cv_analysis=CVAnalysis(
@@ -205,7 +228,10 @@ async def analyze_cv(file: UploadFile = File(...)):
             training_recommendations=[
                 TrainingRecommendation(**training) for training in training_recommendations
             ],
-            ai_insights=ai_insights
+            ai_insights=ai_insights,
+            real_job_offers=[
+                RealJobOffer(**job) for job in real_jobs
+            ]
         )
         
         return response
