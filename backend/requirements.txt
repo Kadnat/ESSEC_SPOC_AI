@@ -1,0 +1,75 @@
+# FastAPI Backend Dependencies for JobMatchAI
+# Created: November 1, 2025
+
+# ============================================
+# Core Framework
+# ============================================
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+pydantic==2.5.0
+python-dotenv==1.0.0
+
+# ============================================
+# AI/ML - Hugging Face & Transformers
+# ============================================
+transformers
+sentence-transformers
+torch
+tokenizers
+
+# ============================================
+# CV Parsing & Text Extraction
+# ============================================
+PyPDF2
+pdfplumber
+python-docx
+pytesseract  # OCR if needed
+Pillow
+
+# ============================================
+# NLP & Text Processing
+# ============================================
+spacy
+nltk
+langdetect
+
+# ============================================
+# Data Handling
+# ============================================
+pandas
+numpy
+scikit-learn
+
+# ============================================
+# API & HTTP
+# ============================================
+httpx==0.25.2
+aiofiles==23.2.1
+requests==2.31.0
+
+# ============================================
+# AI APIs
+# ============================================
+openai==1.54.3
+
+# ============================================
+# Utilities
+# ============================================
+python-jose[cryptography]  # JWT
+passlib[bcrypt]  # Password hashing (if auth needed)
+
+# ============================================
+# Testing (optional)
+# ============================================
+pytest
+pytest-asyncio
+
+# ============================================
+# Notes:
+# - All models sourced from Hugging Face
+# - sentence-transformers: For semantic matching
+# - torch: Required for transformer models
+# - PyPDF2/pdfplumber: CV parsing from PDF
+# - python-docx: CV parsing from DOCX
+# ============================================

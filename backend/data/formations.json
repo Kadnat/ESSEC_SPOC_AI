@@ -1,0 +1,230 @@
+[
+  {
+    "training_id": "F001",
+    "title": "Docker et Kubernetes pour développeurs",
+    "provider": "OpenClassrooms",
+    "url": "https://openclassrooms.com/fr/courses/2035766-optimisez-votre-deploiement-en-creant-des-conteneurs-avec-docker",
+    "duration": "20 heures",
+    "level": "Intermédiaire",
+    "language": "Français",
+    "price": "Gratuit",
+    "skills_acquired": [
+      "Docker",
+      "Kubernetes",
+      "DevOps",
+      "Conteneurisation",
+      "Déploiement"
+    ],
+    "certificate": true,
+    "description": "Apprenez à créer et gérer des conteneurs Docker, et à orchestrer vos applications avec Kubernetes."
+  },
+  {
+    "training_id": "F002",
+    "title": "Machine Learning de A à Z",
+    "provider": "Udemy",
+    "url": "https://www.udemy.com/course/machinelearning/",
+    "duration": "40 heures",
+    "level": "Débutant à Intermédiaire",
+    "language": "Français",
+    "price": "€89.99",
+    "skills_acquired": [
+      "Machine Learning",
+      "Python",
+      "Scikit-learn",
+      "Data Science",
+      "Algorithmes ML"
+    ],
+    "certificate": true,
+    "description": "Formation complète en Machine Learning avec Python, des bases aux algorithmes avancés."
+  },
+  {
+    "training_id": "F003",
+    "title": "React - Le Guide Complet",
+    "provider": "Udemy",
+    "url": "https://www.udemy.com/course/react-le-guide-complet/",
+    "duration": "35 heures",
+    "level": "Débutant à Avancé",
+    "language": "Français",
+    "price": "€94.99",
+    "skills_acquired": [
+      "React",
+      "JavaScript",
+      "Hooks",
+      "Redux",
+      "React Router"
+    ],
+    "certificate": true,
+    "description": "Maîtrisez React de zéro jusqu'aux concepts avancés avec des projets pratiques."
+  },
+  {
+    "training_id": "F004",
+    "title": "Cybersécurité - Protection des Systèmes",
+    "provider": "Coursera",
+    "url": "https://www.coursera.org/learn/cybersecurity-basics",
+    "duration": "30 heures",
+    "level": "Intermédiaire",
+    "language": "Anglais (sous-titres FR)",
+    "price": "Gratuit (certificat payant)",
+    "skills_acquired": [
+      "Cybersécurité",
+      "Sécurité réseau",
+      "Cryptographie",
+      "Ethical Hacking",
+      "ISO 27001"
+    ],
+    "certificate": true,
+    "description": "Apprenez les fondamentaux de la cybersécurité et protégez vos systèmes contre les menaces."
+  },
+  {
+    "training_id": "F005",
+    "title": "UX Design - De la théorie à la pratique",
+    "provider": "OpenClassrooms",
+    "url": "https://openclassrooms.com/fr/courses/3013891-ux-design-decouvrez-les-fondamentaux",
+    "duration": "15 heures",
+    "level": "Débutant",
+    "language": "Français",
+    "price": "Gratuit",
+    "skills_acquired": [
+      "UX Design",
+      "User research",
+      "Wireframing",
+      "Prototypage",
+      "Design thinking"
+    ],
+    "certificate": true,
+    "description": "Découvrez les principes fondamentaux de l'UX Design et créez des expériences utilisateur exceptionnelles."
+  },
+  {
+    "training_id": "F006",
+    "title": "Deep Learning avec TensorFlow",
+    "provider": "Coursera",
+    "url": "https://www.coursera.org/specializations/deep-learning",
+    "duration": "50 heures",
+    "level": "Avancé",
+    "language": "Anglais (sous-titres FR)",
+    "price": "€49/mois",
+    "skills_acquired": [
+      "Deep Learning",
+      "TensorFlow",
+      "Neural Networks",
+      "Computer Vision",
+      "NLP"
+    ],
+    "certificate": true,
+    "description": "Spécialisation complète en Deep Learning par Andrew Ng, couvrant tous les aspects des réseaux de neurones."
+  },
+  {
+    "training_id": "F007",
+    "title": "Python pour Data Science",
+    "provider": "DataCamp",
+    "url": "https://www.datacamp.com/tracks/data-scientist-with-python",
+    "duration": "45 heures",
+    "level": "Débutant à Intermédiaire",
+    "language": "Anglais",
+    "price": "€25/mois",
+    "skills_acquired": [
+      "Python",
+      "Pandas",
+      "NumPy",
+      "Matplotlib",
+      "Data Science"
+    ],
+    "certificate": true,
+    "description": "Track complet pour devenir Data Scientist avec Python, de la manipulation de données à la modélisation."
+  },
+  {
+    "training_id": "F008",
+    "title": "Agile & Scrum - Gestion de Projet",
+    "provider": "Udemy",
+    "url": "https://www.udemy.com/course/agile-scrum-management/",
+    "duration": "12 heures",
+    "level": "Débutant",
+    "language": "Français",
+    "price": "€79.99",
+    "skills_acquired": [
+      "Agile",
+      "Scrum",
+      "Gestion de projet",
+      "Sprint planning",
+      "Kanban"
+    ],
+    "certificate": true,
+    "description": "Apprenez les méthodologies Agile et Scrum pour gérer efficacement vos projets."
+  },
+  {
+    "training_id": "F009",
+    "title": "AWS Cloud Practitioner",
+    "provider": "AWS Training",
+    "url": "https://aws.amazon.com/fr/training/",
+    "duration": "25 heures",
+    "level": "Débutant",
+    "language": "Français",
+    "price": "Gratuit",
+    "skills_acquired": [
+      "AWS",
+      "Cloud Computing",
+      "EC2",
+      "S3",
+      "Cloud Architecture"
+    ],
+    "certificate": true,
+    "description": "Formation officielle AWS pour découvrir les services cloud et préparer la certification Cloud Practitioner."
+  },
+  {
+    "training_id": "F010",
+    "title": "Marketing Digital - Les Fondamentaux",
+    "provider": "Google Digital Garage",
+    "url": "https://learndigital.withgoogle.com/digitalgarage/course/digital-marketing",
+    "duration": "40 heures",
+    "level": "Débutant",
+    "language": "Français",
+    "price": "Gratuit",
+    "skills_acquired": [
+      "Marketing digital",
+      "SEO",
+      "Social media",
+      "Google Ads",
+      "Analytics"
+    ],
+    "certificate": true,
+    "description": "Formation gratuite de Google sur tous les aspects du marketing digital."
+  },
+  {
+    "training_id": "F011",
+    "title": "Flutter & Dart - Développement Mobile",
+    "provider": "Udemy",
+    "url": "https://www.udemy.com/course/flutter-dart-complete-guide/",
+    "duration": "30 heures",
+    "level": "Débutant à Intermédiaire",
+    "language": "Français",
+    "price": "€89.99",
+    "skills_acquired": [
+      "Flutter",
+      "Dart",
+      "Mobile Development",
+      "iOS",
+      "Android"
+    ],
+    "certificate": true,
+    "description": "Créez des applications mobiles cross-platform avec Flutter et Dart."
+  },
+  {
+    "training_id": "F012",
+    "title": "SQL pour Data Analysts",
+    "provider": "Mode Analytics",
+    "url": "https://mode.com/sql-tutorial/",
+    "duration": "20 heures",
+    "level": "Débutant à Intermédiaire",
+    "language": "Anglais",
+    "price": "Gratuit",
+    "skills_acquired": [
+      "SQL",
+      "Database",
+      "Data Analysis",
+      "Queries",
+      "PostgreSQL"
+    ],
+    "certificate": false,
+    "description": "Tutorial SQL interactif pour maîtriser l'interrogation de bases de données."
+  }
+]

@@ -1,0 +1,113 @@
+{
+  "source": "ROME (Pôle Emploi) + ONISEP",
+  "date": "2025-11-01",
+  "rome_jobs": [
+    {
+      "job_id": "M1805",
+      "code_rome": "M1805",
+      "title": "Études et développement informatique",
+      "category": "Informatique",
+      "description": "Concevoir, développer et maintenir des applications informatiques selon les besoins des utilisateurs.",
+      "source": "ROME Pôle Emploi",
+      "required_skills": [
+        "Programmation",
+        "Analyse",
+        "Tests",
+        "Documentation"
+      ],
+      "salary_range": "30-60k€",
+      "education_level": "Bac+2 à Bac+5"
+    },
+    {
+      "job_id": "E1103",
+      "code_rome": "E1103",
+      "title": "Communication",
+      "category": "Communication",
+      "description": "Élaborer et mettre en œuvre la stratégie de communication interne et/ou externe.",
+      "source": "ROME Pôle Emploi",
+      "required_skills": [
+        "Communication",
+        "Rédaction",
+        "Relations publiques",
+        "Événementiel"
+      ],
+      "salary_range": "28-50k€",
+      "education_level": "Bac+3 à Bac+5"
+    },
+    {
+      "job_id": "M1402",
+      "code_rome": "M1402",
+      "title": "Conseil en organisation et management d'entreprise",
+      "category": "Conseil",
+      "description": "Analyser le fonctionnement d'une organisation et proposer des solutions d'amélioration.",
+      "source": "ROME Pôle Emploi",
+      "required_skills": [
+        "Analyse",
+        "Management",
+        "Stratégie",
+        "Conduite du changement"
+      ],
+      "salary_range": "35-70k€",
+      "education_level": "Bac+5"
+    }
+  ],
+  "onisep_careers": [
+    {
+      "title": "Développeur web",
+      "sector": "Numérique",
+      "description": "Crée des sites internet et applications web",
+      "studies": [
+        "DUT Informatique",
+        "Licence Pro",
+        "École d'ingénieur",
+        "Bootcamp"
+      ],
+      "skills_needed": [
+        "HTML/CSS",
+        "JavaScript",
+        "Base de données",
+        "Frameworks"
+      ],
+      "source": "ONISEP"
+    },
+    {
+      "title": "Data analyst",
+      "sector": "Data & IA",
+      "description": "Analyse les données pour aider à la prise de décision",
+      "studies": [
+        "Master Statistiques",
+        "École d'ingénieur",
+        "Formation Data"
+      ],
+      "skills_needed": [
+        "SQL",
+        "Python/R",
+        "Statistiques",
+        "Visualisation"
+      ],
+      "source": "ONISEP"
+    },
+    {
+      "title": "Chef de projet digital",
+      "sector": "Management",
+      "description": "Pilote des projets numériques de A à Z",
+      "studies": [
+        "École de commerce",
+        "Master Management",
+        "MBA Digital"
+      ],
+      "skills_needed": [
+        "Gestion projet",
+        "Agile",
+        "Communication",
+        "Budget"
+      ],
+      "source": "ONISEP"
+    }
+  ],
+  "metadata": {
+    "total_jobs": 3,
+    "total_careers": 3,
+    "note": "Données échantillon. Pour base complète, voir data.gouv.fr et onisep.fr"
+  }
+}

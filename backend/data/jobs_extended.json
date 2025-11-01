@@ -1,0 +1,244 @@
+[
+  {
+    "job_id": "K1801",
+    "code_rome": "K1801",
+    "title": "Conseil en emploi et insertion professionnelle",
+    "category": "RH & Formation",
+    "description": "Accompagner des personnes dans leur recherche d'emploi, élaborer un projet professionnel, orienter vers des formations adaptées.",
+    "required_skills": [
+      "Accompagnement professionnel",
+      "Bilan de compétences",
+      "Connaissance marché emploi",
+      "Techniques de recherche emploi",
+      "Communication"
+    ],
+    "optional_skills": [
+      "Coaching",
+      "Psychologie du travail",
+      "Outils digitaux",
+      "Législation emploi"
+    ],
+    "education_level": "Bac+3 à Bac+5",
+    "experience_required": "2-4 ans",
+    "salary_range": "28-42k€",
+    "remote_friendly": false
+  },
+  {
+    "job_id": "M1402",
+    "code_rome": "M1402",
+    "title": "Conseil en organisation et management",
+    "category": "Conseil",
+    "description": "Analyser le fonctionnement des organisations et proposer des recommandations stratégiques pour améliorer performance et efficacité.",
+    "required_skills": [
+      "Analyse stratégique",
+      "Gestion de projet",
+      "Change management",
+      "Business analysis",
+      "Présentation",
+      "Excel avancé"
+    ],
+    "optional_skills": [
+      "Power BI",
+      "Lean Six Sigma",
+      "SAP",
+      "Consulting"
+    ],
+    "education_level": "Bac+5",
+    "experience_required": "2-5 ans",
+    "salary_range": "38-65k€",
+    "remote_friendly": true
+  },
+  {
+    "job_id": "E1205",
+    "code_rome": "E1205",
+    "title": "Réalisation de contenus multimédias",
+    "category": "Création",
+    "description": "Créer des contenus vidéo, audio, animation pour divers supports (web, réseaux sociaux, publicité).",
+    "required_skills": [
+      "Montage vidéo",
+      "Adobe Premiere",
+      "After Effects",
+      "Motion design",
+      "Storytelling"
+    ],
+    "optional_skills": [
+      "DaVinci Resolve",
+      "Cinema 4D",
+      "Sound design",
+      "YouTube SEO"
+    ],
+    "education_level": "Bac+2 à Bac+5",
+    "experience_required": "1-4 ans",
+    "salary_range": "28-48k€",
+    "remote_friendly": true
+  },
+  {
+    "job_id": "I1401",
+    "code_rome": "I1401",
+    "title": "Maintenance informatique et bureautique",
+    "category": "Support IT",
+    "description": "Assurer la maintenance préventive et curative des équipements informatiques. Support utilisateur et dépannage.",
+    "required_skills": [
+      "Hardware",
+      "Windows/Mac",
+      "Réseau informatique",
+      "Troubleshooting",
+      "Support utilisateur"
+    ],
+    "optional_skills": [
+      "Linux",
+      "Active Directory",
+      "Virtualisation",
+      "ITIL"
+    ],
+    "education_level": "Bac+2",
+    "experience_required": "1-3 ans",
+    "salary_range": "25-38k€",
+    "remote_friendly": false
+  },
+  {
+    "job_id": "D1406",
+    "code_rome": "D1406",
+    "title": "Management en force de vente",
+    "category": "Commercial",
+    "description": "Piloter et animer une équipe commerciale. Définir la stratégie de vente et suivre la performance.",
+    "required_skills": [
+      "Management",
+      "Techniques de vente",
+      "Négociation",
+      "CRM",
+      "Analyse commerciale",
+      "Leadership"
+    ],
+    "optional_skills": [
+      "Salesforce",
+      "Business development",
+      "Account-based selling",
+      "KPI"
+    ],
+    "education_level": "Bac+3 à Bac+5",
+    "experience_required": "5-8 ans",
+    "salary_range": "40-70k€",
+    "remote_friendly": false
+  },
+  {
+    "job_id": "H1206",
+    "code_rome": "H1206",
+    "title": "Management en industrie",
+    "category": "Industrie",
+    "description": "Superviser la production industrielle, gérer les équipes, optimiser les process et garantir la qualité.",
+    "required_skills": [
+      "Gestion production",
+      "Lean Manufacturing",
+      "Management équipes",
+      "Qualité",
+      "Amélioration continue"
+    ],
+    "optional_skills": [
+      "Six Sigma",
+      "ERP",
+      "Normes ISO",
+      "Gestion stocks"
+    ],
+    "education_level": "Bac+3 à Bac+5",
+    "experience_required": "5-10 ans",
+    "salary_range": "40-65k€",
+    "remote_friendly": false
+  },
+  {
+    "job_id": "K2111",
+    "code_rome": "K2111",
+    "title": "Formation professionnelle",
+    "category": "Formation",
+    "description": "Concevoir et animer des formations pour adultes. Évaluer les acquis et adapter la pédagogie.",
+    "required_skills": [
+      "Pédagogie adultes",
+      "Ingénierie formation",
+      "Animation groupe",
+      "Évaluation",
+      "Outils e-learning"
+    ],
+    "optional_skills": [
+      "LMS",
+      "Articulate",
+      "Certification Qualiopi",
+      "Blended learning"
+    ],
+    "education_level": "Bac+3 à Bac+5",
+    "experience_required": "3-6 ans",
+    "salary_range": "30-50k€",
+    "remote_friendly": true
+  },
+  {
+    "job_id": "M1203",
+    "code_rome": "M1203",
+    "title": "Comptabilité",
+    "category": "Finance",
+    "description": "Tenir la comptabilité générale, établir les déclarations fiscales, gérer la trésorerie.",
+    "required_skills": [
+      "Comptabilité générale",
+      "Fiscalité",
+      "Excel",
+      "Logiciels comptables",
+      "Normes comptables"
+    ],
+    "optional_skills": [
+      "SAP",
+      "Consolidation",
+      "Audit",
+      "IFRS"
+    ],
+    "education_level": "Bac+2 à Bac+5",
+    "experience_required": "2-5 ans",
+    "salary_range": "28-48k€",
+    "remote_friendly": true
+  },
+  {
+    "job_id": "J1103",
+    "code_rome": "J1103",
+    "title": "Médecine",
+    "category": "Santé",
+    "description": "Diagnostiquer et traiter les pathologies. Assurer le suivi médical des patients.",
+    "required_skills": [
+      "Diagnostic médical",
+      "Prescription",
+      "Anatomie",
+      "Physiologie",
+      "Relation patient"
+    ],
+    "optional_skills": [
+      "Spécialisation",
+      "Recherche médicale",
+      "Imagerie",
+      "Chirurgie"
+    ],
+    "education_level": "Doctorat (9-11 ans)",
+    "experience_required": "Variable",
+    "salary_range": "50-150k€",
+    "remote_friendly": false
+  },
+  {
+    "job_id": "K2401",
+    "code_rome": "K2401",
+    "title": "Recherche en sciences humaines et sociales",
+    "category": "Recherche",
+    "description": "Mener des recherches en sociologie, anthropologie, psychologie. Publier des travaux scientifiques.",
+    "required_skills": [
+      "Méthodologie recherche",
+      "Analyse qualitative",
+      "Statistiques",
+      "Rédaction scientifique",
+      "Revue littérature"
+    ],
+    "optional_skills": [
+      "R",
+      "SPSS",
+      "Ethnographie",
+      "Enseignement"
+    ],
+    "education_level": "Doctorat",
+    "experience_required": "Post-doctorat",
+    "salary_range": "30-55k€",
+    "remote_friendly": true
+  }
+]
