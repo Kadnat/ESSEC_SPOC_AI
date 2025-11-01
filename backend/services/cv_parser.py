@@ -10,7 +10,7 @@ Strategy:
 Uses:
 - PyPDF2 for PDF extraction
 - python-docx for DOCX extraction
-- OpenAI GPT-4o-mini for intelligent text structuring
+- OpenAI GPT-5-nano for intelligent text structuring
 """
 
 import re

@@ -93,7 +93,7 @@ function App() {
     <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
       {/* Header France Travail style */}
       <header style={{ backgroundColor: '#003b80' }} className="shadow-md">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl" style={{ backgroundColor: '#ff6f00' }}>
@@ -111,20 +111,21 @@ function App() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="py-12">
         {/* Upload Section */}
         {!results && (
-          <div className="max-w-3xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-4xl font-bold mb-3" style={{ color: '#003b80' }}>
+          <div>
+            <div className="text-center mb-12 px-8">
+              <h2 className="text-5xl font-bold mb-4" style={{ color: '#003b80' }}>
                 Analysez votre CV gratuitement
               </h2>
-              <p className="text-lg" style={{ color: '#666' }}>
+              <p className="text-xl" style={{ color: '#666' }}>
                 Découvrez les métiers qui vous correspondent et les formations adaptées à votre profil
               </p>
             </div>
 
-            <div className="bg-white rounded-xl shadow-lg border-2 p-8" style={{ borderColor: '#e0e0e0' }}>
+            {/* Upload Card - Full Width */}
+            <div className="bg-white shadow-lg border-2 p-12 mb-12 mx-8" style={{ borderColor: '#e0e0e0' }}>
               <label htmlFor="cv-upload" className="block cursor-pointer">
                 <input
                   type="file"
@@ -133,17 +134,14 @@ function App() {
                   className="hidden"
                   id="cv-upload"
                 />
-                <div className="border-3 border-dashed rounded-xl p-16 text-center transition-all hover:scale-[1.02]" style={{ 
+                <div className="border-3 border-dashed rounded-xl p-8 text-center transition-all hover:scale-[1.02]" style={{ 
                   borderColor: file ? '#ff6f00' : '#003b80',
                   backgroundColor: file ? '#fff3e0' : '#f0f7ff'
                 }}>
-                  <svg className="mx-auto h-20 w-20 mb-4" style={{ color: '#003b80' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
-                  <p className="text-2xl font-bold mb-2" style={{ color: '#003b80' }}>
+                  <p className="text-lg font-bold mb-1" style={{ color: '#003b80' }}>
                     {file ? '✓ ' + file.name : 'Déposez votre CV ici'}
                   </p>
-                  <p className="text-base" style={{ color: '#666' }}>
+                  <p className="text-sm" style={{ color: '#666' }}>
                     ou cliquez pour sélectionner • PDF ou DOCX • Max 10 Mo
                   </p>
                 </div>
@@ -173,7 +171,7 @@ function App() {
             </div>
 
             {/* Info cards */}
-            <div className="grid md:grid-cols-3 gap-6 mt-12">
+            <div className="grid md:grid-cols-3 gap-6 px-8">
               <div className="bg-white rounded-lg p-6 shadow-md border-t-4" style={{ borderTopColor: '#003b80' }}>
                 <div className="text-4xl mb-3">🎯</div>
                 <h3 className="font-bold text-lg mb-2" style={{ color: '#003b80' }}>Matching IA</h3>
@@ -200,22 +198,25 @@ function App() {
         )}
 
         {results && (
-          <div>
-            <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+          <div className="px-8">
+            <div className="bg-white rounded-xl shadow-lg p-8 mb-8 border-l-4" style={{ borderLeftColor: '#ff6f00' }}>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{results.name}</h3>
-                  <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
+                  <h3 className="text-3xl font-bold mb-3" style={{ color: '#003b80' }}>{results.name}</h3>
+                  <div className="flex flex-wrap gap-6 text-base mb-6" style={{ color: '#666' }}>
                     {results.email && <span>📧 {results.email}</span>}
                     {results.experienceYears !== null && <span>💼 {results.experienceYears} ans d'expérience</span>}
                   </div>
                   
                   {results.skills.length > 0 && (
-                    <div className="mb-4">
-                      <p className="text-sm font-medium text-gray-700 mb-2">Compétences</p>
+                    <div className="mb-6">
+                      <p className="text-sm font-bold mb-3" style={{ color: '#003b80' }}>🔧 COMPÉTENCES</p>
                       <div className="flex flex-wrap gap-2">
                         {results.skills.map((skill, idx) => (
-                          <span key={idx} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm">
+                          <span key={idx} className="px-4 py-2 rounded-full text-sm font-medium" style={{ 
+                            backgroundColor: '#e3f2fd',
+                            color: '#003b80'
+                          }}>
                             {skill}
                           </span>
                         ))}
@@ -224,9 +225,12 @@ function App() {
                   )}
 
                   {results.aiInsights && (
-                    <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-100">
-                      <p className="text-sm font-medium text-blue-900 mb-2">�� Analyse IA</p>
-                      <p className="text-sm text-gray-700 whitespace-pre-line">{results.aiInsights}</p>
+                    <div className="mt-6 p-5 rounded-lg border-l-4" style={{ 
+                      backgroundColor: '#fff3e0',
+                      borderLeftColor: '#ff6f00'
+                    }}>
+                      <p className="text-sm font-bold mb-3" style={{ color: '#e65100' }}>💡 ANALYSE PAR INTELLIGENCE ARTIFICIELLE</p>
+                      <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: '#333' }}>{results.aiInsights}</p>
                     </div>
                   )}
                 </div>
@@ -235,9 +239,21 @@ function App() {
                     setResults(null)
                     setFile(null)
                   }}
-                  className="ml-4 text-sm text-gray-600 hover:text-gray-900"
+                  className="ml-6 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                  style={{ 
+                    backgroundColor: '#f5f5f5',
+                    color: '#666'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = '#e0e0e0'
+                    e.target.style.color = '#003b80'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = '#f5f5f5'
+                    e.target.style.color = '#666'
+                  }}
                 >
-                  Nouvelle analyse
+                  ↻ Nouvelle analyse
                 </button>
               </div>
             </div>
@@ -422,7 +438,7 @@ function App() {
             <div>
               <h4 className="font-bold text-lg mb-3">Technologies</h4>
               <ul className="text-sm text-blue-100 space-y-1">
-                <li>• OpenAI GPT-4o-mini</li>
+                <li>• OpenAI GPT-5-nano</li>
                 <li>• Hugging Face Transformers</li>
                 <li>• France Travail API</li>
                 <li>• React + FastAPI</li>
