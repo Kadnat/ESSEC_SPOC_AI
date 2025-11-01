@@ -114,6 +114,12 @@ class JobFetcher:
                 'sort': '1',  # Sort by date (most recent first)
             }
             
+            print(f"🔍 DEBUG - Input parameters:")
+            print(f"   rome_codes: {rome_codes}")
+            print(f"   keywords: {keywords}")
+            print(f"   location: {location}")
+            print(f"   experience: {experience}")
+            
             # Add ROME codes filter (sanitize inputs: accept both 'M1805' and 'ROME_M1805')
             if rome_codes:
                 cleaned = []
@@ -129,24 +135,22 @@ class JobFetcher:
                     c = c.strip()
                     if c:
                         cleaned.append(c)
+                print(f"🔍 DEBUG - Cleaned ROME codes: {cleaned}")
                 if cleaned:
                     params['codeROME'] = ','.join(cleaned)
             
-            # Add keywords filter (sanitize to avoid reserved chars)
+            # Add keywords filter (use only the FIRST keyword for better results)
             if keywords:
-                safe_keywords = []
-                for kw in keywords[:5]:
-                    if not kw:
-                        continue
-                    s = str(kw).strip()
-                    # Remove characters that may confuse the API (commas, slashes)
-                    s = s.replace(',', ' ').replace('/', ' ').replace('\\', ' ')
-                    # Collapse multiple spaces
-                    s = ' '.join(s.split())
-                    if s:
-                        safe_keywords.append(s)
-                if safe_keywords:
-                    params['motsCles'] = ' '.join(safe_keywords)
+                # Take only the first keyword and clean it
+                first_keyword = str(keywords[0]).strip()
+                # Remove characters that may confuse the API
+                first_keyword = first_keyword.replace(',', ' ').replace('/', ' ').replace('\\', ' ')
+                # Collapse multiple spaces
+                first_keyword = ' '.join(first_keyword.split())
+                
+                if first_keyword:
+                    params['motsCles'] = first_keyword
+                    print(f"🔍 DEBUG - Using keyword: '{first_keyword}'")
             
             # Add location filter
             if location:
@@ -156,11 +160,15 @@ class JobFetcher:
             if experience:
                 params['experience'] = experience
             
+            print(f"🔍 DEBUG - Final API params: {params}")
+            
             # Make API request
             headers = {
                 'Authorization': f'Bearer {token}',
                 'Accept': 'application/json'
             }
+            
+            print(f"🔍 DEBUG - Making request to: {self.search_url}")
             
             response = requests.get(
                 self.search_url,
@@ -168,15 +176,49 @@ class JobFetcher:
                 params=params,
                 timeout=15
             )
+            
+            print(f"🔍 DEBUG - Response status code: {response.status_code}")
+            print(f"🔍 DEBUG - Response headers: {dict(response.headers)}")
+            
             response.raise_for_status()
             
             # Handle 204 No Content (no jobs found)
             if response.status_code == 204:
                 print("ℹ️  No job offers found for the given criteria (HTTP 204)")
-                return []
+                print("🔍 DEBUG - Trying fallback: removing all filters except keywords")
+                
+                # Fallback 1: Try with just keywords (no ROME codes, no experience filter)
+                if keywords:
+                    fallback_params = {
+                        'range': f'0-{min(max_results - 1, 149)}',
+                        'sort': '1',
+                    }
+                    if 'motsCles' in params:
+                        fallback_params['motsCles'] = params['motsCles']
+                    
+                    print(f"🔍 DEBUG - Fallback params: {fallback_params}")
+                    fallback_response = requests.get(
+                        self.search_url,
+                        headers=headers,
+                        params=fallback_params,
+                        timeout=15
+                    )
+                    
+                    if fallback_response.status_code == 200:
+                        print(f"✅ Fallback search succeeded!")
+                        response = fallback_response
+                    else:
+                        print(f"⚠️  Fallback also returned {fallback_response.status_code}")
+                        return []
+                else:
+                    return []
             
             # Parse JSON response
             data = response.json()
+            
+            print(f"🔍 DEBUG - Response data keys: {data.keys() if data else 'None'}")
+            if 'resultats' in data:
+                print(f"🔍 DEBUG - Number of results: {len(data['resultats'])}")
             
             # Extract job offers
             jobs = []
@@ -224,6 +266,18 @@ class JobFetcher:
             # Extract experience required
             experience = offer.get('experienceLibelle', 'Débutant accepté')
             
+            # Extract and parse competences (skills)
+            # France Travail API returns skills as list of dicts: [{'code': '...', 'libelle': '...', 'exigence': 'S'}]
+            # We need to extract just the 'libelle' (skill name) as strings
+            competences_raw = offer.get('competences', [])
+            required_skills = []
+            if isinstance(competences_raw, list):
+                for comp in competences_raw:
+                    if isinstance(comp, dict) and 'libelle' in comp:
+                        required_skills.append(comp['libelle'])
+                    elif isinstance(comp, str):
+                        required_skills.append(comp)
+            
             # Build job dictionary
             job = {
                 'id': offer.get('id'),
@@ -232,7 +286,7 @@ class JobFetcher:
                 'location': location,
                 'contract_type': type_contrat,
                 'description': offer.get('description', ''),
-                'required_skills': offer.get('competences', []),
+                'required_skills': required_skills,
                 'experience_required': experience,
                 'salary': salary_info,
                 'publication_date': offer.get('dateCreation', ''),
@@ -285,19 +339,48 @@ class JobFetcher:
             }
         ]
     
-    def get_jobs_for_cv(self, cv_data: Dict, top_rome_codes: List[str]) -> List[Dict]:
+    def get_jobs_for_cv(
+        self, 
+        cv_data: Dict, 
+        top_rome_codes: List[str], 
+        recommended_jobs: List[Dict] = None,
+        gpt_keywords: List[str] = None
+    ) -> List[Dict]:
         """
         Fetch relevant job offers based on CV analysis and recommended ROME codes
         
         Args:
             cv_data: Parsed CV data with skills, experience, etc.
             top_rome_codes: List of recommended ROME codes from semantic matching
+            recommended_jobs: List of recommended jobs from semantic matching (with titles)
+            gpt_keywords: Optimized keywords generated by GPT for job search
             
         Returns:
             List of relevant job offers
         """
-        # Extract search parameters from CV
-        skills = cv_data.get('skills', [])[:3]  # Top 3 skills as keywords
+        # Priority 1: Use GPT-generated keywords if available
+        job_titles = []
+        if gpt_keywords:
+            job_titles = gpt_keywords[:3]
+            print(f"🤖 Using GPT-generated keywords: {job_titles}")
+        # Priority 2: Extract and simplify job titles from recommendations
+        elif recommended_jobs:
+            for job in recommended_jobs[:3]:
+                title = job.get('title', '')
+                if title:
+                    # Simplify title: take only the main part (before slash or gendered variants)
+                    # Example: "Architecte d'intérieur / Décorateur / Décoratrice d'intérieur" -> "Architecte d'intérieur"
+                    simplified = title.split('/')[0].strip()
+                    # Remove gendered variants in parentheses
+                    if '(' in simplified:
+                        simplified = simplified.split('(')[0].strip()
+                    job_titles.append(simplified)
+            print(f"🔍 DEBUG - Simplified job titles: {job_titles}")
+        # Priority 3: Fallback to skills if no job titles available
+        else:
+            job_titles = cv_data.get('skills', [])[:3]
+            print(f"🔍 DEBUG - No job titles, using skills as fallback: {job_titles}")
+        
         experience_years = cv_data.get('experience_years', 0)
         
         # Map experience years to France Travail format
@@ -311,15 +394,68 @@ class JobFetcher:
         else:
             experience_level = '3'  # 5+ ans
         
-        # Search jobs with CV-based filters
-        jobs = self.search_jobs(
-            rome_codes=top_rome_codes[:3],  # Top 3 ROME matches
-            keywords=skills,
-            max_results=20,
-            experience=experience_level
-        )
+        # Strategy: Try multiple searches with decreasing specificity
+        # NOTE: Per request, try keywords-only FIRST (no ROME filtering)
+        all_jobs = []
+
+        # Try 1: Job title only (no ROME, no experience) - keywords-only test
+        if job_titles:
+            print(f"🔍 Try 1: Job title only (keywords-only, no ROME)")
+            jobs = self.search_jobs(
+                rome_codes=None,
+                keywords=[job_titles[0]],
+                max_results=20,
+                experience=None
+            )
+            all_jobs.extend(jobs)
+
+        # Try 2: If no results, try with ROME codes + first job title
+        if not all_jobs and top_rome_codes and job_titles:
+            print(f"🔍 Try 2: ROME codes + first job title")
+            jobs = self.search_jobs(
+                rome_codes=top_rome_codes[:3],
+                keywords=[job_titles[0]],  # Only first title
+                max_results=20,
+                experience=experience_level
+            )
+            all_jobs.extend(jobs)
+
+        # Try 3: If still no results, try with ROME codes only (no keywords)
+        if not all_jobs and top_rome_codes:
+            print(f"🔍 Try 3: ROME codes only (no keywords)")
+            jobs = self.search_jobs(
+                rome_codes=top_rome_codes[:3],
+                keywords=None,
+                max_results=20,
+                experience=experience_level
+            )
+            all_jobs.extend(jobs)
+
+        # Try 4: Last resort - broader keyword search with multiple titles
+        if not all_jobs and len(job_titles) > 1:
+            print(f"🔍 Try 4: Multiple job titles (no filters)")
+            for title in job_titles[:2]:  # Try first 2 titles separately
+                jobs = self.search_jobs(
+                    rome_codes=None,
+                    keywords=[title],
+                    max_results=10,
+                    experience=None
+                )
+                all_jobs.extend(jobs)
+                if all_jobs:
+                    break
         
-        return jobs
+        # Remove duplicates based on job ID
+        seen_ids = set()
+        unique_jobs = []
+        for job in all_jobs:
+            job_id = job.get('id')
+            if job_id and job_id not in seen_ids:
+                seen_ids.add(job_id)
+                unique_jobs.append(job)
+        
+        print(f"✅ Total unique jobs found: {len(unique_jobs)}")
+        return unique_jobs
 
 
 # Singleton instance

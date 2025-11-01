@@ -118,14 +118,14 @@ class SemanticMatcher:
         # Calculate similarities
         similarities = cosine_similarity(cv_embedding, self.jobs_embeddings)[0]
         
-        # Get top matches
+        # Get top matches (by semantic similarity)
         top_indices = np.argsort(similarities)[::-1][:top_k]
-        
+
         recommendations = []
         for idx in top_indices:
             job = self.jobs_data[idx].copy()
             match_score = float(similarities[idx])
-            
+
             # Calculate missing skills
             cv_skills_lower = [s.lower() for s in cv_data.get('skills', [])]
             required_skills = job.get('required_skills', [])
@@ -133,18 +133,80 @@ class SemanticMatcher:
                 skill for skill in required_skills
                 if skill.lower() not in cv_skills_lower
             ]
-            
+
             recommendations.append({
-                'job_id': job['job_id'],
-                'title': job['title'],
-                'description': job['description'],
+                'job_id': job.get('job_id', job.get('rome_code', job.get('id', ''))),
+                'title': job.get('title', 'Intitulé non disponible'),
+                'description': job.get('description', ''),
                 'match_score': match_score,
                 'required_skills': required_skills,
                 'missing_skills': missing_skills,
                 'salary_range': job.get('salary_range'),
-                'education_level': job.get('education_level')
+                'education_level': job.get('education_level'),
+                'is_alternative': False,
+                'alternative_reason': None
             })
-        
+
+        # If we have no strong matches, broaden the scope and propose alternatives
+        max_score = max([r['match_score'] for r in recommendations]) if recommendations else 0.0
+
+        # Thresholds can be tuned; if top score is low or no recommendations, return alternatives
+        if not recommendations or max_score < 0.25:
+            # Build alternatives based on skills overlap and title keyword matches
+            cv_skills_lower = [s.lower() for s in cv_data.get('skills', [])]
+
+            alt_scores = []
+            for job in self.jobs_data:
+                req_skills = job.get('required_skills', [])
+                if not req_skills:
+                    continue
+
+                # Count overlapping skills
+                overlap = sum(1 for s in req_skills if any(s.lower() in cs or cs in s.lower() for cs in cv_skills_lower))
+                # Normalize by number of required skills
+                norm_overlap = overlap / max(1, len(req_skills))
+
+                # Lightweight title match (tokens in common)
+                title = job.get('title', '')
+                title_tokens = {t.lower() for t in title.split()}
+                cv_tokens = set()
+                for s in cv_data.get('skills', []):
+                    cv_tokens.update([t.lower() for t in s.split()])
+                title_match = len(title_tokens & cv_tokens) / max(1, len(title_tokens)) if title_tokens else 0
+
+                # Final alternative score: prefer skill overlap but include title match
+                alt_score = 0.75 * norm_overlap + 0.25 * title_match
+
+                if alt_score > 0:
+                    alt_scores.append((alt_score, job))
+
+            # Sort alternatives by score and return top_k
+            alt_scores.sort(key=lambda x: x[0], reverse=True)
+
+            alternatives = []
+            for score, job in alt_scores[:top_k]:
+                req_skills = job.get('required_skills', [])
+                missing = [skill for skill in req_skills if skill.lower() not in cv_skills_lower]
+                alternatives.append({
+                    'job_id': job.get('job_id', job.get('rome_code', job.get('id', ''))),
+                    'title': job.get('title', 'Intitulé non disponible'),
+                    'description': job.get('description', ''),
+                    'match_score': float(score),
+                    'required_skills': req_skills,
+                    'missing_skills': missing,
+                    'salary_range': job.get('salary_range'),
+                    'education_level': job.get('education_level'),
+                    'is_alternative': True,
+                    'alternative_reason': 'Compétences proches ou intitulé similaire'
+                })
+
+            # If we had some semantic recommendations (but weak), append alternatives after them
+            if recommendations:
+                # keep existing recommendations but mark as primary even if weak
+                return recommendations + alternatives
+            else:
+                return alternatives
+
         return recommendations
     
     def _create_cv_text(self, cv_data: Dict) -> str:

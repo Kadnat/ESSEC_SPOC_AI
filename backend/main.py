@@ -63,6 +63,9 @@ class JobRecommendation(BaseModel):
     missing_skills: List[str]
     salary_range: Optional[str] = None
     education_level: Optional[str] = None
+    # Optional fields to indicate fallback/alternative recommendations
+    is_alternative: Optional[bool] = False
+    alternative_reason: Optional[str] = None
 
 class TrainingRecommendation(BaseModel):
     """Training/formation recommendation"""
@@ -205,10 +208,21 @@ async def analyze_cv(file: UploadFile = File(...)):
             unique_missing_skills
         )
         
+        # Generate optimized job search keywords using GPT
+        optimized_keywords = llm_service.generate_job_search_keywords(
+            cv_data,
+            job_recommendations
+        )
+        
         # Fetch real job offers from France Travail API
         # Extract ROME codes from recommended jobs
         top_rome_codes = [job.get('job_id', '') for job in job_recommendations[:3]]
-        real_jobs = job_fetcher.get_jobs_for_cv(cv_data, top_rome_codes)
+        real_jobs = job_fetcher.get_jobs_for_cv(
+            cv_data, 
+            top_rome_codes, 
+            job_recommendations,
+            gpt_keywords=optimized_keywords
+        )
         
         # Build response
         response = RecommendationResponse(

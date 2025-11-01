@@ -195,6 +195,75 @@ Ton analyse doit être encourageante, précise et en français."""
         except Exception as e:
             print(f"Error enhancing job description: {e}")
             return base_description
+    
+    def generate_job_search_keywords(
+        self,
+        cv_data: Dict,
+        job_recommendations: List[Dict]
+    ) -> List[str]:
+        """
+        Generate optimized keywords for job search using GPT
+        
+        Args:
+            cv_data: Parsed CV data with skills and experience
+            job_recommendations: List of recommended jobs from semantic matching
+            
+        Returns:
+            List of 3-5 optimized search keywords for France Travail API
+        """
+        if not self.client:
+            # Fallback: use simplified job titles
+            return [job.get('title', '').split('/')[0].strip() for job in job_recommendations[:3] if job.get('title')]
+        
+        try:
+            # Prepare context for GPT
+            skills = ', '.join(cv_data.get('skills', [])[:10])
+            job_titles = [job.get('title', '') for job in job_recommendations[:5] if job.get('title')]
+            exp_years = cv_data.get('experience_years', 0)
+            
+            context = f"""PROFIL:
+- Compétences: {skills}
+- Expérience: {exp_years} ans
+- Métiers recommandés: {', '.join(job_titles)}"""
+            
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": """Tu es un expert en recherche d'emploi. Ton rôle est de générer des mots-clés 
+                        optimisés pour rechercher des offres d'emploi sur France Travail. Les mots-clés doivent être :
+                        - Courts et précis (2-4 mots maximum)
+                        - Des intitulés de poste courants en France
+                        - Sans variantes genrées multiples (choisir la forme la plus courante)
+                        - Adaptés au profil du candidat
+                        
+                        Réponds UNIQUEMENT avec une liste de 3-5 mots-clés séparés par des virgules, sans numérotation ni explication."""
+                    },
+                    {
+                        "role": "user",
+                        "content": f"""Génère 3-5 mots-clés optimisés pour rechercher des offres d'emploi correspondant à ce profil :
+
+{context}
+
+Réponds uniquement avec les mots-clés séparés par des virgules."""
+                    }
+                ],
+                max_tokens=100,
+                temperature=0.7
+            )
+            
+            keywords_text = response.choices[0].message.content.strip()
+            # Parse comma-separated keywords
+            keywords = [k.strip() for k in keywords_text.split(',') if k.strip()]
+            
+            print(f"🤖 GPT generated keywords: {keywords}")
+            return keywords[:5]  # Max 5 keywords
+            
+        except Exception as e:
+            print(f"⚠️  Error generating keywords with GPT: {e}")
+            # Fallback: use simplified job titles
+            return [job.get('title', '').split('/')[0].strip() for job in job_recommendations[:3] if job.get('title')]
 
 
 # Singleton instance
