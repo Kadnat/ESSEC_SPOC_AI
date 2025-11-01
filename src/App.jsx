@@ -14,12 +14,12 @@ function App() {
     if (selectedFile) {
       const validTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
       if (!validTypes.includes(selectedFile.type)) {
-        setError('Format invalide. Veuillez télécharger un fichier PDF ou DOCX.')
+        setError('Invalid format. Please upload a PDF or DOCX file.')
         return
       }
       
       if (selectedFile.size > 10 * 1024 * 1024) {
-        setError('Fichier trop volumineux. Maximum 10MB.')
+        setError('File too large. Maximum 10MB.')
         return
       }
       
@@ -83,7 +83,7 @@ function App() {
       })
     } catch (err) {
       console.error('Error analyzing CV:', err)
-      setError(err.response?.data?.detail || 'Erreur lors de l\'analyse du CV. Vérifiez que le backend est lancé sur le port 8001.')
+      setError(err.response?.data?.detail || 'Error analyzing CV. Please check that the backend is running on port 8001.')
     } finally {
       setAnalyzing(false)
     }
@@ -101,11 +101,11 @@ function App() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-white">JobMatch AI</h1>
-                <p className="text-sm text-blue-100">Votre assistant carrière intelligent</p>
+                <p className="text-sm text-blue-100">Your intelligent career assistant</p>
               </div>
             </div>
             <div className="hidden md:flex items-center gap-2 px-4 py-2 rounded" style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}>
-              <span className="text-sm text-white">🤖 Propulsé par IA</span>
+              <span className="text-sm text-white">🤖 Powered by AI</span>
             </div>
           </div>
         </div>
@@ -117,10 +117,10 @@ function App() {
           <div>
             <div className="text-center mb-12 px-8">
               <h2 className="text-5xl font-bold mb-4" style={{ color: '#003b80' }}>
-                Analysez votre CV gratuitement
+                Analyze your CV for free
               </h2>
               <p className="text-xl" style={{ color: '#666' }}>
-                Découvrez les métiers qui vous correspondent et les formations adaptées à votre profil
+                Discover jobs that match your profile and relevant training courses
               </p>
             </div>
 
@@ -139,10 +139,10 @@ function App() {
                   backgroundColor: file ? '#fff3e0' : '#f0f7ff'
                 }}>
                   <p className="text-lg font-bold mb-1" style={{ color: '#003b80' }}>
-                    {file ? '✓ ' + file.name : 'Déposez votre CV ici'}
+                    {file ? '✓ ' + file.name : 'Drop your CV here'}
                   </p>
                   <p className="text-sm" style={{ color: '#666' }}>
-                    ou cliquez pour sélectionner • PDF ou DOCX • Max 10 Mo
+                    or click to select • PDF or DOCX • Max 10 MB
                   </p>
                 </div>
               </label>
@@ -159,7 +159,7 @@ function App() {
                   onMouseEnter={(e) => !analyzing && (e.target.style.backgroundColor = '#e56300')}
                   onMouseLeave={(e) => !analyzing && (e.target.style.backgroundColor = '#ff6f00')}
                 >
-                  {analyzing ? '⏳ Analyse en cours...' : '🚀 Analyser mon CV'}
+                  {analyzing ? '⏳ Analyzing...' : '🚀 Analyze my CV'}
                 </button>
               )}
 
@@ -174,23 +174,23 @@ function App() {
             <div className="grid md:grid-cols-3 gap-6 px-8">
               <div className="bg-white rounded-lg p-6 shadow-md border-t-4" style={{ borderTopColor: '#003b80' }}>
                 <div className="text-4xl mb-3">🎯</div>
-                <h3 className="font-bold text-lg mb-2" style={{ color: '#003b80' }}>Matching IA</h3>
+                <h3 className="font-bold text-lg mb-2" style={{ color: '#003b80' }}>AI Matching</h3>
                 <p className="text-sm" style={{ color: '#666' }}>
-                  Trouvez les métiers qui correspondent à vos compétences
+                  Find jobs that match your skills
                 </p>
               </div>
               <div className="bg-white rounded-lg p-6 shadow-md border-t-4" style={{ borderTopColor: '#ff6f00' }}>
                 <div className="text-4xl mb-3">💼</div>
-                <h3 className="font-bold text-lg mb-2" style={{ color: '#003b80' }}>Offres réelles</h3>
+                <h3 className="font-bold text-lg mb-2" style={{ color: '#003b80' }}>Real Job Offers</h3>
                 <p className="text-sm" style={{ color: '#666' }}>
-                  Accédez aux offres d'emploi France Travail
+                  Access France Travail job listings
                 </p>
               </div>
               <div className="bg-white rounded-lg p-6 shadow-md border-t-4" style={{ borderTopColor: '#003b80' }}>
                 <div className="text-4xl mb-3">📚</div>
-                <h3 className="font-bold text-lg mb-2" style={{ color: '#003b80' }}>Formations</h3>
+                <h3 className="font-bold text-lg mb-2" style={{ color: '#003b80' }}>Training Courses</h3>
                 <p className="text-sm" style={{ color: '#666' }}>
-                  Développez vos compétences manquantes
+                  Develop your missing skills
                 </p>
               </div>
             </div>
@@ -202,15 +202,17 @@ function App() {
             <div className="bg-white rounded-xl shadow-lg p-8 mb-8 border-l-4" style={{ borderLeftColor: '#ff6f00' }}>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h3 className="text-3xl font-bold mb-3" style={{ color: '#003b80' }}>{results.name}</h3>
+                  <h3 className="text-3xl font-bold mb-3" style={{ color: '#003b80' }}>
+                    {results.name ? results.name.split(' ')[0] + ' ' + results.name.split(' ').slice(1).map(n => n[0] + '.').join(' ') : 'Candidat'}
+                  </h3>
                   <div className="flex flex-wrap gap-6 text-base mb-6" style={{ color: '#666' }}>
-                    {results.email && <span>📧 {results.email}</span>}
-                    {results.experienceYears !== null && <span>💼 {results.experienceYears} ans d'expérience</span>}
+                    {results.email && <span>📧 {results.email.replace(/(.{2})(.*)(@.*)/, '$1***$3')}</span>}
+                    {results.experienceYears !== null && <span>💼 {results.experienceYears} years of experience</span>}
                   </div>
                   
                   {results.skills.length > 0 && (
                     <div className="mb-6">
-                      <p className="text-sm font-bold mb-3" style={{ color: '#003b80' }}>🔧 COMPÉTENCES</p>
+                      <p className="text-sm font-bold mb-3" style={{ color: '#003b80' }}>🔧 SKILLS</p>
                       <div className="flex flex-wrap gap-2">
                         {results.skills.map((skill, idx) => (
                           <span key={idx} className="px-4 py-2 rounded-full text-sm font-medium" style={{ 
@@ -229,8 +231,10 @@ function App() {
                       backgroundColor: '#fff3e0',
                       borderLeftColor: '#ff6f00'
                     }}>
-                      <p className="text-sm font-bold mb-3" style={{ color: '#e65100' }}>💡 ANALYSE PAR INTELLIGENCE ARTIFICIELLE</p>
-                      <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: '#333' }}>{results.aiInsights}</p>
+                      <p className="text-sm font-bold mb-3" style={{ color: '#e65100' }}>💡 AI-GENERATED INSIGHTS</p>
+                      <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: '#333' }}>
+                        {results.aiInsights.replace(new RegExp(results.name, 'gi'), results.name.split(' ')[0])}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -253,7 +257,7 @@ function App() {
                     e.target.style.color = '#666'
                   }}
                 >
-                  ↻ Nouvelle analyse
+                  ↻ New analysis
                 </button>
               </div>
             </div>
@@ -266,21 +270,21 @@ function App() {
                     className={'pb-4 px-1 border-b-2 font-medium text-sm transition-colors ' + 
                       (activeTab === 'jobs' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700')}
                   >
-                    Métiers recommandés ({results.topJobs.length})
+                    Recommended Jobs ({results.topJobs.length})
                   </button>
                   <button
                     onClick={() => setActiveTab('offers')}
                     className={'pb-4 px-1 border-b-2 font-medium text-sm transition-colors ' +
                       (activeTab === 'offers' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700')}
                   >
-                    Offres réelles ({results.realJobOffers.length})
+                    Real Job Offers ({results.realJobOffers.length})
                   </button>
                   <button
                     onClick={() => setActiveTab('trainings')}
                     className={'pb-4 px-1 border-b-2 font-medium text-sm transition-colors ' +
                       (activeTab === 'trainings' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700')}
                   >
-                    Formations ({results.trainings.length})
+                    Training Courses ({results.trainings.length})
                   </button>
                 </nav>
               </div>
@@ -306,7 +310,7 @@ function App() {
                       )}
                       {job.missingSkills.length > 0 && (
                         <div className="mt-5 p-4 rounded-lg" style={{ backgroundColor: '#fff3e0' }}>
-                          <p className="text-sm font-bold mb-3" style={{ color: '#e65100' }}>📈 Compétences à développer:</p>
+                          <p className="text-sm font-bold mb-3" style={{ color: '#e65100' }}>📈 Skills to develop:</p>
                           <div className="flex flex-wrap gap-2">
                             {job.missingSkills.map((skill, i) => (
                               <span key={i} className="px-3 py-1 rounded text-xs font-medium" style={{
@@ -360,7 +364,7 @@ function App() {
                               onMouseEnter={(e) => e.target.style.backgroundColor = '#e56300'}
                               onMouseLeave={(e) => e.target.style.backgroundColor = '#ff6f00'}
                             >
-                              Voir l'offre →
+                              View offer →
                             </a>
                           )}
                         </div>
@@ -369,8 +373,8 @@ function App() {
                   ) : (
                     <div className="bg-white rounded-xl shadow-lg p-16 text-center">
                       <div className="text-6xl mb-4">🔍</div>
-                      <p className="text-lg font-medium" style={{ color: '#666' }}>Aucune offre d'emploi trouvée pour le moment</p>
-                      <p className="text-sm mt-2" style={{ color: '#999' }}>Réessayez avec un autre profil</p>
+                      <p className="text-lg font-medium" style={{ color: '#666' }}>No job offers found at the moment</p>
+                      <p className="text-sm mt-2" style={{ color: '#999' }}>Try again with a different profile</p>
                     </div>
                   )}
                 </div>
@@ -385,7 +389,7 @@ function App() {
                         <span className="font-semibold">{training.provider}</span> • ⏱️ {training.duration}
                       </p>
                       <div className="mb-5">
-                        <p className="text-sm font-bold mb-3" style={{ color: '#003b80' }}>✅ Compétences acquises:</p>
+                        <p className="text-sm font-bold mb-3" style={{ color: '#003b80' }}>✅ Skills acquired:</p>
                         <div className="flex flex-wrap gap-2">
                           {training.skills.map((skill, i) => (
                             <span key={i} className="px-3 py-1 rounded text-xs font-medium" style={{
@@ -415,7 +419,7 @@ function App() {
                           e.target.style.color = '#003b80'
                         }}
                       >
-                        En savoir plus →
+                        Learn more →
                       </a>
                     </div>
                   ))}
@@ -432,28 +436,28 @@ function App() {
             <div>
               <h4 className="font-bold text-lg mb-3">JobMatch AI</h4>
               <p className="text-sm text-blue-100">
-                Votre assistant carrière intelligent propulsé par l'IA
+                Your intelligent career assistant powered by AI
               </p>
             </div>
             <div>
               <h4 className="font-bold text-lg mb-3">Technologies</h4>
               <ul className="text-sm text-blue-100 space-y-1">
-                <li>• OpenAI GPT-5-nano</li>
+                <li>• OpenAI GPT-4o-mini</li>
                 <li>• Hugging Face Transformers</li>
                 <li>• France Travail API</li>
                 <li>• React + FastAPI</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold text-lg mb-3">Projet</h4>
+              <h4 className="font-bold text-lg mb-3">Project</h4>
               <p className="text-sm text-blue-100">
                 ESSEC Business School<br />
-                Intelligence Artificielle 2025
+                Artificial Intelligence 2025
               </p>
             </div>
           </div>
           <div className="pt-6 border-t text-center text-sm" style={{ borderColor: 'rgba(255,255,255,0.2)', color: '#b3d9ff' }}>
-            <p>© 2025 JobMatch AI • Fait avec ❤️ pour l'ESSEC</p>
+            <p>© 2025 JobMatch AI • Made with ❤️ for ESSEC</p>
           </div>
         </div>
       </footer>

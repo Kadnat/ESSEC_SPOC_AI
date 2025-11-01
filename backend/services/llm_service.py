@@ -49,24 +49,24 @@ class LLMService:
                 messages=[
                     {
                         "role": "system",
-                        "content": """Tu es un conseiller en orientation professionnelle expert. 
-                        Ton rôle est d'analyser le profil d'un candidat et de lui fournir des conseils 
-                        personnalisés pour sa carrière. Sois concis, encourageant et constructif. 
-                        Réponds toujours en français."""
+                        "content": """You are an expert career counselor. 
+                        Your role is to analyze a candidate's profile and provide personalized 
+                        career advice. Be concise, encouraging, and constructive. 
+                        Always respond in English."""
                     },
                     {
                         "role": "user",
-                        "content": f"""Analyse ce profil professionnel et fournis des insights personnalisés :
+                        "content": f"""Analyze this professional profile and provide personalized insights:
 
 {context}
 
-Fournis une analyse en 3-4 phrases qui :
-1. Résume les points forts du profil
-2. Identifie les opportunités de carrière les plus pertinentes
-3. Recommande les compétences prioritaires à développer
-4. Donne un conseil actionnable pour la suite
+Provide an analysis in 3-4 sentences that:
+1. Summarizes the profile's key strengths
+2. Identifies the most relevant career opportunities
+3. Recommends priority skills to develop
+4. Gives actionable advice for next steps
 
-Ton analyse doit être encourageante, précise et en français."""
+Your analysis should be encouraging, precise, and in English."""
                     }
                 ],
                 max_tokens=300,
@@ -90,31 +90,31 @@ Ton analyse doit être encourageante, précise et en français."""
         lines = []
         
         # Profile summary
-        lines.append("PROFIL DU CANDIDAT:")
+        lines.append("CANDIDATE PROFILE:")
         if cv_data.get('name'):
-            lines.append(f"- Nom: {cv_data['name']}")
+            lines.append(f"- Name: {cv_data['name']}")
         
         if cv_data.get('experience_years'):
-            lines.append(f"- Expérience: {cv_data['experience_years']} ans")
+            lines.append(f"- Experience: {cv_data['experience_years']} years")
         
         if cv_data.get('skills'):
             skills_str = ', '.join(cv_data['skills'][:10])
-            lines.append(f"- Compétences: {skills_str}")
+            lines.append(f"- Skills: {skills_str}")
         
         if cv_data.get('education'):
             edu_str = ', '.join(cv_data['education'][:2])
-            lines.append(f"- Formation: {edu_str}")
+            lines.append(f"- Education: {edu_str}")
         
         # Job recommendations
-        lines.append("\nMÉTIERS RECOMMANDÉS (par ordre de compatibilité):")
+        lines.append("\nRECOMMENDED JOBS (by compatibility):")
         for i, job in enumerate(job_recommendations[:3], 1):
             match_pct = int(job.get('match_score', 0) * 100)
-            lines.append(f"{i}. {job['title']} ({match_pct}% de compatibilité)")
+            lines.append(f"{i}. {job['title']} ({match_pct}% match)")
         
         # Missing skills
         if missing_skills:
             top_missing = missing_skills[:5]
-            lines.append(f"\nCOMPÉTENCES À DÉVELOPPER: {', '.join(top_missing)}")
+            lines.append(f"\nSKILLS TO DEVELOP: {', '.join(top_missing)}")
         
         return '\n'.join(lines)
     
@@ -130,32 +130,32 @@ Ton analyse doit être encourageante, précise et en français."""
         # Analyze skills
         num_skills = len(cv_data.get('skills', []))
         if num_skills > 10:
-            insights.append(f"Excellent ! Vous possédez {num_skills} compétences techniques identifiées.")
+            insights.append(f"Excellent! You have {num_skills} identified technical skills.")
         elif num_skills > 5:
-            insights.append(f"Vous avez {num_skills} compétences techniques dans votre profil.")
+            insights.append(f"You have {num_skills} technical skills in your profile.")
         else:
-            insights.append("Pensez à enrichir votre CV avec plus de compétences techniques spécifiques.")
+            insights.append("Consider enriching your CV with more specific technical skills.")
         
         # Analyze experience
         exp_years = cv_data.get('experience_years')
         if exp_years:
             if exp_years >= 5:
-                insights.append(f"Avec {exp_years} ans d'expérience, vous êtes un profil senior recherché.")
+                insights.append(f"With {exp_years} years of experience, you are a sought-after senior profile.")
             elif exp_years >= 2:
-                insights.append(f"Vos {exp_years} ans d'expérience vous positionnent comme profil confirmé.")
+                insights.append(f"Your {exp_years} years of experience position you as an experienced profile.")
             else:
-                insights.append(f"Vous êtes en début de carrière ({exp_years} an{'s' if exp_years > 1 else ''}) avec un beau potentiel d'évolution.")
+                insights.append(f"You are early in your career ({exp_years} year{'s' if exp_years > 1 else ''}) with great growth potential.")
         
         # Analyze job matches
         if job_recommendations:
             best_match = job_recommendations[0]
             match_pct = int(best_match.get('match_score', 0) * 100)
-            insights.append(f"Votre meilleur match est '{best_match['title']}' avec {match_pct}% de compatibilité.")
+            insights.append(f"Your best match is '{best_match['title']}' with {match_pct}% compatibility.")
         
         # Recommend skill development
         if missing_skills:
             top_missing = missing_skills[:3]
-            insights.append(f"Pour élargir vos opportunités, développez : {', '.join(top_missing)}.")
+            insights.append(f"To expand your opportunities, develop: {', '.join(top_missing)}.")
         
         return " ".join(insights)
     
@@ -179,11 +179,11 @@ Ton analyse doit être encourageante, précise et en français."""
                 messages=[
                     {
                         "role": "system",
-                        "content": "Tu es un expert en ressources humaines. Enrichis les descriptions de poste de manière concise et professionnelle."
+                        "content": "You are an HR expert. Enrich job descriptions concisely and professionally in English."
                     },
                     {
                         "role": "user",
-                        "content": f"Enrichis cette description de poste en 2 phrases maximum :\n\nTitre : {job_title}\nDescription : {base_description}"
+                        "content": f"Enrich this job description in maximum 2 sentences:\n\nTitle: {job_title}\nDescription: {base_description}"
                     }
                 ],
                 max_tokens=150,
