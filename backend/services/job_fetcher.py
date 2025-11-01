@@ -170,6 +170,12 @@ class JobFetcher:
             )
             response.raise_for_status()
             
+            # Handle 204 No Content (no jobs found)
+            if response.status_code == 204:
+                print("ℹ️  No job offers found for the given criteria (HTTP 204)")
+                return []
+            
+            # Parse JSON response
             data = response.json()
             
             # Extract job offers
