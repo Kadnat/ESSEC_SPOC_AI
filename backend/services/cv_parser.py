@@ -37,7 +37,7 @@ class CVParser:
     def __init__(self):
         # Initialize OpenAI client
         self.api_key = os.getenv('OPENAI_API_KEY')
-        self.model = os.getenv('OPENAI_MODEL', 'gpt-4o-mini')
+        self.model = os.getenv('OPENAI_MODEL', 'gpt-5-nano')
         
         if self.api_key:
             self.client = OpenAI(api_key=self.api_key)
